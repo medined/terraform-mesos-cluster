@@ -121,18 +121,18 @@ resource "aws_iam_instance_profile" "mesos_ec2_instance_profile" {
 # Zookeeper instance (standalone for now)
 # ------------------------------------------------------------------------------------
 
-//module "zookeeper" {
-//    source = "./modules/zookeeper"
-//
-//    instance_type = var.zookeeper_instance_type
-//    image_id = var.zookeeper_image_id
-//    key_pair_name = var.key_pair_name
-//    cluster_id = random_id.cluster_id.b64_std
-//    subnet_id = data.aws_subnet.subnet_us_east_1d.id
-//    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-//    security_groups = [aws_security_group.mesos_security_group.id]
-//    environment = terraform.workspace
-//}
+module "zookeeper" {
+    source = "./modules/zookeeper"
+
+    instance_type = var.zookeeper_instance_type
+    image_id = var.zookeeper_image_id
+    key_pair_name = var.key_pair_name
+    cluster_id = random_id.cluster_id.b64_std
+    subnet_id = data.aws_subnet.subnet_us_east_1d.id
+    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
+    security_groups = [aws_security_group.mesos_security_group.id]
+    environment = terraform.workspace
+}
 
 # ------------------------------------------------------------------------------------
 # Splunk instance (standalone for now)
