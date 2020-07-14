@@ -15,5 +15,7 @@ resource "aws_instance" "zookeeper" {
         Name = "zookeeper_${terraform.workspace}_${var.cluster_id}"
         ClusterId = var.cluster_id
         ZookeeperInstance = "zookeeper-${var.cluster_id}"
+        Environment = terraform.workspace
+        Tier = "zookeeper"
     }
 }

@@ -1,0 +1,34 @@
+{
+  "id": "spring",
+  "cmd": null,
+  "cpus": 0.25,
+  "mem": 128,
+  "disk": 0,
+  "instances": 1,
+  "constraints": [["availability-zone", "GROUP_BY", "3"]],
+  "container": {
+    "docker": {
+      "forcePullImage": true,  
+      "image": "markthill/test-spring-boot-app",
+      "parameters": [
+        { "key": "log-driver", "value": "splunk" },
+        { "key": "log-opt", "value": "splunk-token=cf9cec0e-750c-432d-8638-701c0d16390c" },
+        { "key": "log-opt", "value": "splunk-url=http://ec2-54-89-152-164.compute-1.amazonaws.com:8088" }
+        ]
+    },
+    "type": "DOCKER",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "protocol": "tcp",
+        "name": null,
+        "labels": null
+      }
+    ]
+  },
+  "networks": [
+    {
+      "mode": "container/bridge"
+    }
+  ]
+}

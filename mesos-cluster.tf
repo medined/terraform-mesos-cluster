@@ -127,7 +127,7 @@ module "zookeeper" {
     instance_type = var.zookeeper_instance_type
     image_id = var.zookeeper_image_id
     key_pair_name = var.key_pair_name
-    cluster_id = random_id.cluster_id.b64_std
+    cluster_id = random_id.cluster_id.hex
     subnet_id = data.aws_subnet.subnet_us_east_1d.id
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
@@ -144,7 +144,7 @@ module "splunk" {
     instance_type = var.splunk_instance_type
     image_id = var.splunk_image_id
     key_pair_name = var.key_pair_name
-    cluster_id = random_id.cluster_id.b64_std
+    cluster_id = random_id.cluster_id.hex
     subnet_id = data.aws_subnet.subnet_us_east_1d.id
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
@@ -161,7 +161,7 @@ module "splunk" {
 //    instance_type = var.fluentd_instance_type
 //    image_id = var.fluentd_image_id
 //    key_pair_name = var.key_pair_name
-//    cluster_id = random_id.cluster_id.b64_std
+//    cluster_id = random_id.cluster_id.hex
 //    subnet_id = data.aws_subnet.subnet_us_east_1d.id
 //    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
 //    security_groups = [aws_security_group.mesos_security_group.id]
@@ -182,7 +182,7 @@ module "mesos-master" {
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
     instance_type = var.mesos_instance_type
-    cluster_id = random_id.cluster_id.b64_std
+    cluster_id = random_id.cluster_id.hex
     asg_min_size = 0
     asg_max_size = 1
     asg_desired_capacity = 1
@@ -193,21 +193,21 @@ module "mesos-master" {
 # Mesos Agent(s)
 # ------------------------------------------------------------------------------------
 
-module "mesos-agent" {
-    source = "./modules/mesos"
-
-    mesos_type = "Agent"
-    mesos_image_id = var.mesos_image_id
-    key_pair_name = var.key_pair_name
-    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-    security_groups = [aws_security_group.mesos_security_group.id]
-    instance_type = var.mesos_instance_type
-    cluster_id = random_id.cluster_id.b64_std
-    asg_min_size = 0
-    asg_max_size = 4
-    asg_desired_capacity = 1
-    environment = terraform.workspace
-}
+//module "mesos-agent" {
+//    source = "./modules/mesos"
+//
+//    mesos_type = "Agent"
+//    mesos_image_id = var.mesos_image_id
+//    key_pair_name = var.key_pair_name
+//    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
+//    security_groups = [aws_security_group.mesos_security_group.id]
+//    instance_type = var.mesos_instance_type
+//    cluster_id = random_id.cluster_id.hex
+//    asg_min_size = 0
+//    asg_max_size = 4
+//    asg_desired_capacity = 1
+//    environment = terraform.workspace
+//}
 
 # ------------------------------------------------------------------------------------
 # Mesos Marathon Framework(s)
@@ -222,7 +222,7 @@ module "mesos-marathon" {
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
     instance_type = var.mesos_instance_type
-    cluster_id = random_id.cluster_id.b64_std
+    cluster_id = random_id.cluster_id.hex
     asg_min_size = 0
     asg_max_size = 2
     asg_desired_capacity = 1

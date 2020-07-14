@@ -49,7 +49,7 @@ resource "aws_autoscaling_group" "mesos_asg" {
     } 
     tag {
         key                 = "Environment"
-        value               = var.environment
+        value               = terraform.workspace
         propagate_at_launch = true
     }         
 }
