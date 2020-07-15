@@ -1,5 +1,14 @@
 # terraform-mesos-cluster
 
+## Building a Mesos cluster
+
+- Install Terraform
+- cd to the root directory of this project
+- run `terraform workspace list` and verify that you are in the development or test workspace (production hasn't been completed)
+- create/switch workspaces if needed: 
+    - `terraform workspace new development`
+    - `terraform workspace select development`
+
 ## Vagrant
 
 **Assumptions**
@@ -27,3 +36,25 @@ vagrant up
 ```
 
 Marathon will be running on http://localhost:8082
+
+## Need to develop counts of instances:
+
+This counts the number of instances of each cluster_group
+
+cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | {(.[0].attributes.cluster_group): length}'
+
+This counts the number of instances in each availability zone
+
+cat foo.json | jq '.slaves | group_by(.attributes.availability_zone) | .[] | {(.[0].attributes.availability_zone): length}'
+
+Obtains the name of the group and the cpu counts
+
+cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpu_count": (.resources.cpus)})'
+
+Continure to sum the cpu counts
+
+cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpu_count": (.resources.cpus)}) | {(.[0].name): (map(.cpu_count) | add)}'
+
+Gets the key of those
+
+cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpu_count": (.resources.cpus)}) | {(.[0].name): (map(.cpu_count) | add)} | keys'

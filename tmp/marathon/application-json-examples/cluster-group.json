@@ -1,11 +1,11 @@
 {
-  "id": "spring",
+  "id": "spring-devops",
   "cmd": null,
   "cpus": 0.25,
   "mem": 128,
   "disk": 0,
-  "instances": 1,
-  "constraints": [["cluster_group", "CLUSTER", "devops"]],
+  "instances": 2,
+  "constraints": [["cluster-group", "CLUSTER", "devops"],["availability-zone", "GROUP_BY", "3"]],
   "container": {
     "docker": {
       "forcePullImage": true,
@@ -13,7 +13,7 @@
       "parameters": [
         { "key": "log-driver", "value": "splunk" },
         { "key": "log-opt", "value": "splunk-token=cf9cec0e-750c-432d-8638-701c0d16390c" },
-        { "key": "log-opt", "value": "splunk-url=http://ec2-52-71-239-82.compute-1.amazonaws.com:8088" }
+        { "key": "log-opt", "value": "splunk-url=http://ec2-18-209-31-158.compute-1.amazonaws.com:8088" }
         ]
     },
     "type": "DOCKER",
