@@ -110,6 +110,10 @@ resource "aws_iam_role_policy_attachment" "ec2_full_attachment" {
   role       = aws_iam_role.mesos_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
+resource "aws_iam_role_policy_attachment" "ecr_full_attachment" {
+  role       = aws_iam_role.mesos_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+}
 
 resource "aws_iam_instance_profile" "mesos_ec2_instance_profile" {
   name = "mesos_ec2_instance_profile_${terraform.workspace}"

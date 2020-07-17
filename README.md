@@ -58,3 +58,11 @@ cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"n
 Gets the key of those
 
 cat foo.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpu_count": (.resources.cpus)}) | {(.[0].name): (map(.cpu_count) | add)} | keys'
+
+Organizes the different group and aggregates available cpu in this case
+
+cat foo2.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpu_count": (.resources.cpus)}) | {"name":(.[0].name), "cpus": (map(.cpu_count) | add)} ' | jq . -s
+
+(base) markthill@marks-mbp tmp % cat /tmp/slaves.json | jq '.slaves | group_by(.attributes.cluster_group) | .[] | map({"name": (.attributes.cluster_group),"cpus": (.resources.cpus),"gpus": (.resources.gpus),"mem": (.resources.mem)}) | {"name":(.[0].name), "cpus": (map(.cpus) | add), "gpus": (map(.gpus) | add), "mem": (map(.mem) | add)} ' | jq . -s | jq '.[].name'
+"arroe"
+"devops"
