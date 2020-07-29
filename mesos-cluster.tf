@@ -9,21 +9,21 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "us-east-1"
+  region  = var.default_region
 }
 
 data "aws_vpc" "default_vpc" {
   tags = { "Default" = "true" }
 }
 
-data "aws_subnet" "subnet_us_east_1d" {
+data "aws_subnet" "region_subnet" {
   filter {
     name   = "vpc-id"
     values = ["${data.aws_vpc.default_vpc.id}"] # insert value here
   }
   filter {
     name = "availability-zone"
-    values = ["us-east-1d"]
+    values = ["${var.default_region}${var.default_az}"]
   }
 }
 
@@ -129,31 +129,34 @@ module "zookeeper" {
     source = "./modules/zookeeper"
 
     instance_type = var.zookeeper_instance_type
-    image_id = var.zookeeper_image_id
-    key_pair_name = var.key_pair_name
+    image_id = var.zookeeper_image_id[var.default_region]
+    key_pair_name = "${var.key_pair_name}-${var.default_region}"
     cluster_id = random_id.cluster_id.hex
-    subnet_id = data.aws_subnet.subnet_us_east_1d.id
+    subnet_id = data.aws_subnet.region_subnet.id
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-    security_groups = [aws_security_group.mesos_security_group.id]
+    security_groups = [aws_security_group.mesos_security_group.name]
     environment = terraform.workspace
+    azs = var.availability_zones[var.default_region]
+    region = var.default_region
 }
 
 # ------------------------------------------------------------------------------------
 # Splunk instance (standalone for now)
 # ------------------------------------------------------------------------------------
-module "splunk" {
-    source = "./modules/splunk"
-
-    enabled = var.enable_splunk
-    instance_type = var.splunk_instance_type
-    image_id = var.splunk_image_id
-    key_pair_name = var.key_pair_name
-    cluster_id = random_id.cluster_id.hex
-    subnet_id = data.aws_subnet.subnet_us_east_1d.id
-    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-    security_groups = [aws_security_group.mesos_security_group.id]
-    environment = terraform.workspace
-}
+//module "splunk" {
+//    source = "./modules/splunk"
+//
+//    enabled = var.enable_splunk
+//    instance_type = var.splunk_instance_type
+//    image_id = var.splunk_image_id[var.default_region]
+//    key_pair_name = "${var.key_pair_name}-${var.default_region}"
+//    cluster_id = random_id.cluster_id.hex
+//    subnet_id = data.aws_subnet.region_subnet.id
+//    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
+//    security_groups = [aws_security_group.mesos_security_group.id]
+//    environment = terraform.workspace
+//    region = var.default_region
+//}
 
 # ------------------------------------------------------------------------------------
 # Fluentd instance (standalone for now)
@@ -163,26 +166,26 @@ module "splunk" {
 //
 //    enabled = var.enable_fluentd
 //    instance_type = var.fluentd_instance_type
-//    image_id = var.fluentd_image_id
-//    key_pair_name = var.key_pair_name
+//    image_id = var.fluentd_image_id[var.default_region]
+//    key_pair_name = "${var.key_pair_name}-${var.default_region}"
 //    cluster_id = random_id.cluster_id.hex
-//    subnet_id = data.aws_subnet.subnet_us_east_1d.id
+//    subnet_id = data.aws_subnet.region_subnet.id
 //    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
 //    security_groups = [aws_security_group.mesos_security_group.id]
 //    environment = terraform.workspace
+//    region = var.default_region
 //}
 
 # ------------------------------------------------------------------------------------
 # Mesos Master(s)
 # ------------------------------------------------------------------------------------
 
-
 module "mesos-master" {
     source = "./modules/mesos"
 
     mesos_type = "Master"
-    mesos_image_id = var.mesos_image_id
-    key_pair_name = var.key_pair_name
+    mesos_image_id = var.mesos_image_id[var.default_region]
+    key_pair_name = "${var.key_pair_name}-${var.default_region}"
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
     instance_type = var.mesos_instance_type
@@ -191,6 +194,8 @@ module "mesos-master" {
     asg_max_size = 1
     asg_desired_capacity = 1
     environment = terraform.workspace
+    azs = var.availability_zones[var.default_region]
+    region = var.default_region
 }
 
 # ------------------------------------------------------------------------------------
@@ -201,8 +206,8 @@ module "mesos-master" {
 //    source = "./modules/mesos"
 //
 //    mesos_type = "Agent"
-//    mesos_image_id = var.mesos_image_id
-//    key_pair_name = var.key_pair_name
+//    mesos_image_id = var.mesos_image_id[var.default_region]
+//    key_pair_name = "${var.key_pair_name}-${var.default_region}"
 //    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
 //    security_groups = [aws_security_group.mesos_security_group.id]
 //    instance_type = var.mesos_instance_type
@@ -221,8 +226,8 @@ module "mesos-marathon" {
     source = "./modules/mesos"
 
     mesos_type = "Marathon"
-    mesos_image_id = var.mesos_image_id
-    key_pair_name = var.key_pair_name
+    mesos_image_id = var.mesos_image_id[var.default_region]
+    key_pair_name = "${var.key_pair_name}-${var.default_region}"
     instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
     security_groups = [aws_security_group.mesos_security_group.id]
     instance_type = var.mesos_instance_type
@@ -231,4 +236,37 @@ module "mesos-marathon" {
     asg_max_size = 2
     asg_desired_capacity = 1
     environment = terraform.workspace
+    azs = var.availability_zones[var.default_region]
+    region = var.default_region
+}
+
+resource "aws_elb" "eureka_elb" {
+  name               = "eureka-elb"
+  availability_zones = ["${var.default_region}${var.default_az}"]
+
+  listener {
+    instance_port     = 8010
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "HTTP:8010/"
+    interval            = 30
+  }
+
+  cross_zone_load_balancing   = true
+  idle_timeout                = 200
+  connection_draining         = true
+  connection_draining_timeout = 200
+
+  tags = {
+    Name = "eureka-elb"
+  }
+
+  security_groups = [aws_security_group.mesos_security_group.id]
 }

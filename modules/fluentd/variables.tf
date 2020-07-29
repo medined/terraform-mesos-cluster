@@ -34,3 +34,4 @@ variable "enabled" {
   type = bool
   default = true
 }
+variable "region" { type = string }

@@ -2,7 +2,7 @@
 
 apt-get update
 apt-get install -y awscli
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION="${default_region}"
 
 mkdir /home/ubuntu/.aws/
 printf "[default]\nregion = us-east-1" >> /home/ubuntu/.aws/config

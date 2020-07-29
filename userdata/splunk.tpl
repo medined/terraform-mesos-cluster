@@ -3,7 +3,7 @@
 apt-get update
 apt-get install -y awscli
 apt install -y jq
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION=${default_region}
 
 mkdir -p /home/ubuntu/apps/
 cd /home/ubuntu/apps/

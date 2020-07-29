@@ -18,3 +18,5 @@ variable "asg_desired_capacity" {
     default = 1
 }
 variable "environment" { type = string }
+variable "azs" {type = list}
+variable "region" { type = string }

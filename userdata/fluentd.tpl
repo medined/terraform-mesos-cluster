@@ -1,6 +1,6 @@
 #! /bin/bash
 
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION=${default_region}
 
 INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 LOCAL_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)

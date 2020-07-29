@@ -6,3 +6,5 @@ variable "subnet_id" { type = string }
 variable "instance_profile_name" { type = string }
 variable "security_groups" { type = list(string) }
 variable "environment" { type = string }
+variable "azs" { type = list }
+variable "region" { type = string }

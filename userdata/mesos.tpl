@@ -3,7 +3,7 @@
 apt-get update
 apt-get install -y awscli
 apt install -y jq
-export AWS_DEFAULT_REGION=us-east-1
+export AWS_DEFAULT_REGION=${default_region}
 
 INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 CLUSTER_ID=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=ClusterId" | jq -r '.Tags[].Value')

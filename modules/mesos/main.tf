@@ -2,6 +2,10 @@
 
 data "template_file" "user_data" {
     template = file("${path.root}/userdata/mesos.tpl")
+
+    vars = {
+        default_region = var.region
+    }
 }
 
 resource "aws_launch_configuration" "mesos_launch_config" {
@@ -11,17 +15,20 @@ resource "aws_launch_configuration" "mesos_launch_config" {
     iam_instance_profile = var.instance_profile_name
     security_groups = var.security_groups
     instance_type = var.instance_type
-    user_data = base64encode(data.template_file.user_data.template)
+    user_data = base64encode(data.template_file.user_data.rendered)
 
     root_block_device {
         volume_type = "gp2"
         volume_size = 15
+        delete_on_termination = true
     }
+
+    depends_on = [var.instance_profile_name]
 }
 
 resource "aws_autoscaling_group" "mesos_asg" {
     name = "mesos_${var.mesos_type}_asg_${terraform.workspace}_${var.cluster_id}"
-    availability_zones = ["us-east-1b", "us-east-1c", "us-east-1d"]
+    availability_zones = var.azs
     launch_configuration = aws_launch_configuration.mesos_launch_config.name
     min_size = var.asg_min_size
     max_size = var.asg_max_size
