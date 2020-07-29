@@ -27,6 +27,28 @@ data "aws_subnet" "region_subnet" {
   }
 }
 
+data "aws_subnet" "region_subnetb" {
+  filter {
+    name   = "vpc-id"
+    values = ["${data.aws_vpc.default_vpc.id}"] # insert value here
+  }
+  filter {
+    name = "availability-zone"
+    values = ["${var.default_region}b"]
+  }
+}
+
+data "aws_subnet" "region_subnetc" {
+  filter {
+    name   = "vpc-id"
+    values = ["${data.aws_vpc.default_vpc.id}"] # insert value here
+  }
+  filter {
+    name = "availability-zone"
+    values = ["${var.default_region}c"]
+  }
+}
+
 data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
 }
@@ -64,6 +86,14 @@ resource "aws_security_group_rule" "mesos_security_group_self_to" {
   protocol                 = -1
   security_group_id        = aws_security_group.mesos_security_group.id
   source_security_group_id = aws_security_group.mesos_security_group.id
+}
+resource "aws_security_group_rule" "mesos_elb_security_group_self_to" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = -1
+  security_group_id        = aws_security_group.mesos_security_group.id
+  source_security_group_id = aws_security_group.mesos_elb_security_group.id
 }
 resource "aws_security_group_rule" "home_router_cidr" {
   type              = "ingress"
@@ -240,9 +270,37 @@ module "mesos-marathon" {
     region = var.default_region
 }
 
+resource "aws_security_group" "mesos_elb_security_group" {
+  name        = "mesos_elb_security_group_${terraform.workspace}"
+  description = "Mesos elb security group for eureka"
+  vpc_id      = data.aws_vpc.default_vpc.id
+
+  tags = {
+    Name = "mesos-elb-security-group_${terraform.workspace}"
+  }
+}
+resource "aws_security_group_rule" "all_egress_elb" {
+  type              = "egress"
+  from_port         = -1
+  to_port           = -1
+  protocol          = -1
+  security_group_id = aws_security_group.mesos_elb_security_group.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+resource "aws_security_group_rule" "all_ingress_elb" {
+  type                     = "ingress"
+  from_port                = -1
+  to_port                  = -1
+  protocol                 = -1
+  security_group_id        = aws_security_group.mesos_elb_security_group.id
+  cidr_blocks              = ["0.0.0.0/0"]
+}
+
 resource "aws_elb" "eureka_elb" {
   name               = "eureka-elb"
-  availability_zones = ["${var.default_region}${var.default_az}"]
+  availability_zones = var.availability_zones[var.default_region]
+  internal = false
+  # subnets = [data.aws_subnet.region_subnet.id, data.aws_subnet.region_subnetb.id, data.aws_subnet.region_subnetc.id]
 
   listener {
     instance_port     = 8010
@@ -268,5 +326,5 @@ resource "aws_elb" "eureka_elb" {
     Name = "eureka-elb"
   }
 
-  security_groups = [aws_security_group.mesos_security_group.id]
+  security_groups = [aws_security_group.mesos_elb_security_group.id]
 }

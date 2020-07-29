@@ -2,7 +2,7 @@
   "id": "eureka",
   "cmd": null,
   "cpus": 1,
-  "mem": 384,
+  "mem": 1024,
   "disk": 0,
   "instances": 1,
   "container": {
