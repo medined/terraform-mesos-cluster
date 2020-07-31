@@ -1,0 +1,64 @@
+{
+  "id": "nginx",
+  "apps": [
+    {
+      "id": "nginx1",
+      "cmd": null,
+      "cpus": 0.5,
+      "mem": 128,
+      "disk": 0,
+      "instances": 2,
+      "container": {
+        "docker": {
+          "image": "nginx",
+          "forcePullImage": true
+        },
+        "type": "DOCKER",
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "protocol": "tcp",
+            "name": null,
+            "labels": null
+          }
+        ]
+      },
+      "networks": [
+        {
+          "mode": "container/bridge"
+        }
+      ],
+      "env": {}
+    },
+    {
+      "id": "nginx2",
+      "cmd": null,
+      "cpus": 0.5,
+      "mem": 128,
+      "disk": 0,
+      "instances": 2,
+      "container": {
+        "docker": {
+          "image": "nginx",
+          "forcePullImage": true
+        },
+        "type": "DOCKER",
+        "portMappings": [
+          {
+            "containerPort": 80,
+            "protocol": "tcp",
+            "name": null,
+            "labels": null
+          }
+        ]
+      },
+      "networks": [
+        {
+          "mode": "container/bridge"
+        }
+      ],
+      "env": {}
+    }
+  ]
+}
+

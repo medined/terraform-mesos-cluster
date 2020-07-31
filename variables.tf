@@ -1,5 +1,5 @@
 variable "default_region" {
-  default = "us-east-2"
+  default = "us-east-1"
 }
 variable "default_az" {
   default = "a"
@@ -44,7 +44,7 @@ variable "splunk_instance_type" {
 }
 variable "enable_splunk" {
   type = bool
-  default = true
+  default = false
 }
 
 variable "fluentd_image_id" {
@@ -59,7 +59,7 @@ variable "fluentd_instance_type" {
 }
 variable "enable_fluentd" {
   type = bool
-  default = true
+  default = false
 }
 
 variable "availability_zones" {

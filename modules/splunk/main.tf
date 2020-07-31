@@ -23,6 +23,6 @@ resource "aws_instance" "splunk" {
     root_block_device {
         volume_type = "gp2"
         volume_size = 15
-        // delete_on_termination = true
+        delete_on_termination = true
     }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "zuul",
+  "id": "spring-boot-api",
   "cmd": null,
   "cpus": 1,
   "mem": 512,
@@ -7,14 +7,13 @@
   "instances": 1,
   "container": {
     "docker": {
-      "image": "markthill/zuul-gateway",
+      "image": "markthill/spring-boot-api",
       "forcePullImage": true
     },
     "type": "DOCKER",
     "portMappings": [
       {
-        "containerPort": 8011,
-        "hostPort": 8011,
+        "containerPort": 8014,
         "protocol": "tcp",
         "name": null,
         "labels": null

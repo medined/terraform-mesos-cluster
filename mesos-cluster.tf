@@ -172,39 +172,41 @@ module "zookeeper" {
 
 # ------------------------------------------------------------------------------------
 # Splunk instance (standalone for now)
+# Splunk is disabled by default (switch the enabled variable to enable it)
 # ------------------------------------------------------------------------------------
-//module "splunk" {
-//    source = "./modules/splunk"
-//
-//    enabled = var.enable_splunk
-//    instance_type = var.splunk_instance_type
-//    image_id = var.splunk_image_id[var.default_region]
-//    key_pair_name = "${var.key_pair_name}-${var.default_region}"
-//    cluster_id = random_id.cluster_id.hex
-//    subnet_id = data.aws_subnet.region_subnet.id
-//    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-//    security_groups = [aws_security_group.mesos_security_group.id]
-//    environment = terraform.workspace
-//    region = var.default_region
-//}
+module "splunk" {
+    source = "./modules/splunk"
+
+    enabled = var.enable_splunk
+    instance_type = var.splunk_instance_type
+    image_id = var.splunk_image_id[var.default_region]
+    key_pair_name = "${var.key_pair_name}-${var.default_region}"
+    cluster_id = random_id.cluster_id.hex
+    subnet_id = data.aws_subnet.region_subnet.id
+    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
+    security_groups = [aws_security_group.mesos_security_group.id]
+    environment = terraform.workspace
+    region = var.default_region
+}
 
 # ------------------------------------------------------------------------------------
 # Fluentd instance (standalone for now)
+# Fluentd is disabled by default (switch the enabled variable to enable it)
 # ------------------------------------------------------------------------------------
-//module "fluentd" {
-//    source = "./modules/fluentd"
-//
-//    enabled = var.enable_fluentd
-//    instance_type = var.fluentd_instance_type
-//    image_id = var.fluentd_image_id[var.default_region]
-//    key_pair_name = "${var.key_pair_name}-${var.default_region}"
-//    cluster_id = random_id.cluster_id.hex
-//    subnet_id = data.aws_subnet.region_subnet.id
-//    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
-//    security_groups = [aws_security_group.mesos_security_group.id]
-//    environment = terraform.workspace
-//    region = var.default_region
-//}
+module "fluentd" {
+    source = "./modules/fluentd"
+
+    enabled = var.enable_fluentd
+    instance_type = var.fluentd_instance_type
+    image_id = var.fluentd_image_id[var.default_region]
+    key_pair_name = "${var.key_pair_name}-${var.default_region}"
+    cluster_id = random_id.cluster_id.hex
+    subnet_id = data.aws_subnet.region_subnet.id
+    instance_profile_name = aws_iam_instance_profile.mesos_ec2_instance_profile.name
+    security_groups = [aws_security_group.mesos_security_group.id]
+    environment = terraform.workspace
+    region = var.default_region
+}
 
 # ------------------------------------------------------------------------------------
 # Mesos Master(s)
@@ -231,7 +233,7 @@ module "mesos-master" {
 # ------------------------------------------------------------------------------------
 # Mesos Agent(s)
 # ------------------------------------------------------------------------------------
-
+# This is commented out because the agents now build in a separate terraform configuration
 //module "mesos-agent" {
 //    source = "./modules/mesos"
 //
