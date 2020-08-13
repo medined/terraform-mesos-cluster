@@ -298,35 +298,35 @@ resource "aws_security_group_rule" "all_ingress_elb" {
   cidr_blocks              = ["0.0.0.0/0"]
 }
 
-resource "aws_elb" "eureka_elb" {
-  name               = "eureka-elb"
-  availability_zones = var.availability_zones[var.default_region]
-  internal = false
-  # subnets = [data.aws_subnet.region_subnet.id, data.aws_subnet.region_subnetb.id, data.aws_subnet.region_subnetc.id]
-
-  listener {
-    instance_port     = 8010
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    timeout             = 3
-    target              = "HTTP:8010/"
-    interval            = 30
-  }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 200
-  connection_draining         = true
-  connection_draining_timeout = 200
-
-  tags = {
-    Name = "eureka-elb"
-  }
-
-  security_groups = [aws_security_group.mesos_elb_security_group.id]
-}
+//resource "aws_elb" "eureka_elb" {
+//  name               = "eureka-elb"
+//  availability_zones = var.availability_zones[var.default_region]
+//  internal = false
+//  # subnets = [data.aws_subnet.region_subnet.id, data.aws_subnet.region_subnetb.id, data.aws_subnet.region_subnetc.id]
+//
+//  listener {
+//    instance_port     = 8010
+//    instance_protocol = "http"
+//    lb_port           = 80
+//    lb_protocol       = "http"
+//  }
+//
+//  health_check {
+//    healthy_threshold   = 2
+//    unhealthy_threshold = 2
+//    timeout             = 3
+//    target              = "HTTP:8010/"
+//    interval            = 30
+//  }
+//
+//  cross_zone_load_balancing   = true
+//  idle_timeout                = 200
+//  connection_draining         = true
+//  connection_draining_timeout = 200
+//
+//  tags = {
+//    Name = "eureka-elb"
+//  }
+//
+//  security_groups = [aws_security_group.mesos_elb_security_group.id]
+//}
