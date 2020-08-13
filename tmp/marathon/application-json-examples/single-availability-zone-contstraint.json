@@ -1,0 +1,31 @@
+{
+  "id": "client",
+  "cmd": null,
+  "cpus": 0.5,
+  "mem": 384,
+  "disk": 0,
+  "instances": 1,
+  "TAKEOUTconstraints": [["availability_zone", "CLUSTER", "us-east-1c"]],
+  "container": {
+    "docker": {
+      "image": "markthill/eureka-client",
+      "forcePullImage": true
+    },
+    "type": "DOCKER",
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 8080,
+        "protocol": "tcp",
+        "name": null,
+        "labels": null
+      }
+    ]
+  },
+  "networks": [
+    {
+      "mode": "container/bridge"
+    }
+  ],
+  "env": {}
+}
