@@ -1,0 +1,14 @@
+export AWS_DEFAULT_REGION=us-east-1
+export AWS_PROFILE=bluejay
+
+export TF_VAR_default_vpc=$(aws ec2 describe-vpcs \
+  --filter Name=isDefault,Values=true \
+  --query 'Vpcs[].VpcId' \
+  --output text)
+
+export TF_VAR_subnet_id=$(aws ec2 describe-subnets \
+  --filters \
+    Name=vpc-id,Values=$TF_VAR_default_vpc \
+    Name=availability-zone,Values=${AWS_DEFAULT_REGION}a \
+  --query 'Subnets[].SubnetId' \
+  --output text)

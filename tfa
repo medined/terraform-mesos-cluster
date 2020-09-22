@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export TF_IGNORE=trace
+export TF_LOG=TRACE
+export TF_LOG_PATH="ylog-tf-apply-$(date "+%Y-%m-%d_%H:%M").log"
+
+source .envrc
+
+terraform workspace new development
+terraform workspace select development
+terraform init
+time terraform apply --auto-approve
+
+ls -ltr ylog-tf-apply*.log | tail -n 1
