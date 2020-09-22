@@ -1,6 +1,10 @@
-.terraform
-terraform.tfstate*
+# Developer Support 
 .idea
 
 # Logs
 ylog-*.log
+
+# Terraform
+.terraform
+terraform.tfstate*
+tfplan
